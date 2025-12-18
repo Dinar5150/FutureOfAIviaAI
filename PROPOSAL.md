@@ -12,7 +12,7 @@ This work targets the Science4Cast-style task: given a temporal semantic network
 - **Node features:** normalized node degree (1D), chosen for simplicity, speed, and as a strong baseline feature under preferential attachment dynamics.
 - **Edge scoring / decoder:** dot-product between the learned node embeddings of a candidate pair.
 - **Training objective:** binary classification over provided candidate pairs using `BCEWithLogitsLoss`, with `pos_weight = #neg/#pos` to handle extreme class imbalance.
-- **Metric:** compute ROC-AUC using the repository’s `utils.calculate_ROC`.
+- **Metric:** compute ROC-AUC using the repository's `utils.calculate_ROC`.
 
 ## Why This Method
 - GCNs are a canonical GNN architecture covered in graph ML coursework and are directly applicable to link prediction.
@@ -22,7 +22,7 @@ This work targets the Science4Cast-style task: given a temporal semantic network
 ## Expected Benefit
 - **Improved performance** compared to simple degree-based heuristics on some settings, especially where neighborhood context matters.
 - **Learned representations** that capture local graph structure and can generalize across different `delta/cutoff/minedge` configurations.
-- A clean, maintainable implementation integrated into the repo’s existing dataset and evaluation format.
+- A clean, maintainable implementation integrated into the repo's existing dataset and evaluation format.
 
 ## Potential Challenges and Mitigations
 - **Severe class imbalance** (very low positive rate for some tasks):
@@ -65,4 +65,3 @@ Optional single-dataset run:
 ```bash
 python all_models/M9/model.py --data SemanticGraph_delta_1_cutoff_25_minedge_1.pkl
 ```
-
