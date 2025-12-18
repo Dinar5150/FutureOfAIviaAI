@@ -109,24 +109,37 @@ class TrainConfig:
     seed: int = 42
 
 
-def compute_auc(scores: np.ndarray, labels: np.ndarray) -> float:
-    order = np.argsort(-scores)
-    sorted_labels = labels[order]
-    tp = fp = 0
-    tps = []
-    fps = []
-    for lab in sorted_labels:
-        if lab == 1:
-            tp += 1
-        else:
-            fp += 1
-        tps.append(tp)
-        fps.append(fp)
-    if tp == 0 or fp == 0:
+def auc_via_utils_calculate_ROC(scores: np.ndarray, labels: np.ndarray) -> float:
+    """
+    Compute ROC-AUC by calling the repository's `utils.calculate_ROC`.
+
+    This matches the metric implementation used by other models in this repo.
+    `utils.calculate_ROC` plots the ROC curve; we temporarily patch plotting to
+    no-ops so training/evaluation can run non-interactively.
+    """
+    labels = np.asarray(labels)
+    positives = int(labels.sum())
+    negatives = int(len(labels) - positives)
+    if positives == 0 or negatives == 0:
         return 0.5
-    tpr = np.array(tps, dtype=np.float64) / tp
-    fpr = np.array(fps, dtype=np.float64) / fp
-    return float(np.trapz(tpr, fpr))
+
+    sorted_idx = np.flip(np.argsort(scores, axis=0))
+
+    import utils as _utils
+
+    old_show = _utils.plt.show
+    old_plot = _utils.plt.plot
+    try:
+        _utils.plt.show = lambda *args, **kwargs: None
+        _utils.plt.plot = lambda *args, **kwargs: None
+        return float(_utils.calculate_ROC(sorted_idx, labels))
+    finally:
+        _utils.plt.show = old_show
+        _utils.plt.plot = old_plot
+        try:
+            _utils.plt.close("all")
+        except Exception:
+            pass
 
 
 def split_pairs(
@@ -201,7 +214,7 @@ def train_one_dataset(
         if len(val_pairs) > 0:
             with torch.no_grad():
                 val_scores = model(feats, adj, val_pairs_t)
-                auc = compute_auc(val_scores.cpu().numpy(), val_labels)
+                auc = auc_via_utils_calculate_ROC(val_scores.cpu().numpy(), val_labels)
                 if auc > best_val_auc:
                     best_val_auc = auc
                     best_state = {k: v.detach().clone() for k, v in model.state_dict().items()}
@@ -214,14 +227,14 @@ def train_one_dataset(
     if len(val_pairs) > 0:
         with torch.no_grad():
             best_val_scores = model(feats, adj, val_pairs_t).cpu().numpy()
-        val_auc = compute_auc(best_val_scores, val_labels)
+        val_auc = auc_via_utils_calculate_ROC(best_val_scores, val_labels)
     else:
         val_auc = float("nan")
 
     with torch.no_grad():
         all_pairs_t = torch.from_numpy(pairs.astype(np.int64)).to(device)
         all_scores = model(feats, adj, all_pairs_t).cpu().numpy()
-        full_auc = compute_auc(all_scores, labels)
+        full_auc = auc_via_utils_calculate_ROC(all_scores, labels)
 
     return {
         "auc_val": val_auc,
