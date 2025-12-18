@@ -5,14 +5,22 @@ description = "Predicting the Future of AI with AI: High-quality link prediction
 authors = ["Mario Krenn, Lorenzo Buffoni, Bruno Coutinho, Sagi Eppel, Jacob Gates Foster, Andrew Gritsevskiy, Harlin Lee, Yichao Lu, Joao P. Moutinho, Nima Sanjabi, Rishi Sonthalia, Ngoc Mai Tran, Francisco Valente, Yangxinyu Xie, Rose Yu, Michael Kopp"]
 license = "MIT"
 readme = "README.md"
+packages = [
+  { include = "all_models" },
+  { include = "agents" },
+  { include = "tools" }
+]
 
 [tool.poetry.dependencies]
-python = "3.8.8"
-numpy = "1.20.1"
-scipy = "1.6.2"
-networkx = "2.5"
-matplotlib = "3.3.4"
-torch = "1.9.0"
+# Python 3.10 to support modern typing (e.g., `dict | None`) used in M9 GCN.
+python = ">=3.10,<3.12"
+# Core scientific stack (versions compatible with Python 3.10 and torch 2.0.x)
+numpy = "1.24.3"
+scipy = "1.10.1"
+networkx = "2.8.4"
+matplotlib = "3.7.1"
+# CPU-friendly torch; replace with cuda-specific wheel if you have GPU.
+torch = "2.0.0"
 
 [build-system]
 requires = ["poetry-core"]

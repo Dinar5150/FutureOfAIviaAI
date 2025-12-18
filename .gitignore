@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+
+# Virtualenv / Conda
+.venv/
+venv/
+ENV/
+env/
+.conda/
+
+# Packaging / build
+dist/
+build/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Outputs
+results/
+report/
+logs_*.txt
+
+# Large datasets (downloaded externally)
+SemanticGraph_*.pkl
+all_edges.pkl
