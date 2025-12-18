@@ -1,0 +1,5 @@
+- Prediction from year (2021 - delta, 2021), with delta = [1, 3, 5]
+- Minimal vertex degree: cutoff = [0, 5, 25]
+- Prediction from unconnected to edge_weight = [1, 3] edges
+
+(delta, cutoff, edge_weight):
