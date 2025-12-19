@@ -12,7 +12,7 @@ This work targets the Science4Cast-style task: given a temporal semantic network
 - **Node features:** normalized node degree (1D), chosen for simplicity, speed, and as a strong baseline feature under preferential attachment dynamics.
 - **Edge scoring / decoder:** dot-product between the learned node embeddings of a candidate pair.
 - **Training objective:** binary classification over provided candidate pairs using `BCEWithLogitsLoss`, with `pos_weight = #neg/#pos` to handle extreme class imbalance.
-- **Metric:** compute ROC-AUC using the repository's `utils.calculate_ROC`.
+- **Metric:** ROC-AUC.
 
 ## Why This Method
 - GCNs are a canonical GNN architecture covered in graph ML coursework and are directly applicable to link prediction.

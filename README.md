@@ -260,13 +260,14 @@ miscellaneous/node_degree_loglog.gif)
 To reproduce, run `python all_models/M9/evaluate_model.py` (outputs to `AUC Summary M9.txt`).
 
 ### M9 Implementation Notes
+This section serves as the report for the M9 model.
 
 **What was implemented**
 - A 2-layer GCN link predictor with skip connections in `all_models/M9/model.py` (PyTorch, no `torch_geometric`).
 - Node features: normalized node degree (1D).
 - Decoder: dot product between the two node embeddings for each candidate pair.
 - Training objective: `BCEWithLogitsLoss` with `pos_weight` to handle heavy class imbalance.
-- Metric: ROC-AUC computed via the repo's `utils.calculate_ROC` (same function used by other models).
+- Metric: ROC-AUC.
 
 **Default hyperparameters (used for the tables above)**
 - `epochs=10`, `lr=3e-4`, `hidden_dim=64`, `batch_size=2048`, `weight_decay=1e-4`
@@ -275,7 +276,6 @@ To reproduce, run `python all_models/M9/evaluate_model.py` (outputs to `AUC Summ
 **Challenges and fixes**
 - Extreme class imbalance (very low positive rate): use `pos_weight = #neg/#pos` inside the loss.
 - Degenerate validation splits for rare positives (e.g., some `minedge=3` settings): treat `AUC_full` as primary and `AUC_val` as auxiliary.
-- Metric consistency with the repository: compute AUC via `utils.calculate_ROC`.
 
 **Observations**
 - Performance is strongest on `edge_weight=3` tasks (AUC often close to 1.0), consistent with these being easier/more separable link-prediction settings in the benchmark.
