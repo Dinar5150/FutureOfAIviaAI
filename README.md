@@ -262,7 +262,7 @@ To reproduce, run `python all_models/M9/evaluate_model.py` (outputs to `AUC Summ
 ### M9 Implementation Notes
 
 **What was implemented**
-- A 2-layer GCN link predictor in `all_models/M9/model.py` (PyTorch, no `torch_geometric`).
+- A 2-layer GCN link predictor with skip connections in `all_models/M9/model.py` (PyTorch, no `torch_geometric`).
 - Node features: normalized node degree (1D).
 - Decoder: dot product between the two node embeddings for each candidate pair.
 - Training objective: `BCEWithLogitsLoss` with `pos_weight` to handle heavy class imbalance.
@@ -270,7 +270,7 @@ To reproduce, run `python all_models/M9/evaluate_model.py` (outputs to `AUC Summ
 
 **Default hyperparameters (used for the tables above)**
 - `epochs=10`, `lr=3e-4`, `hidden_dim=64`, `batch_size=2048`, `weight_decay=1e-4`
-- `max_pairs=200000` (random subsample for speed; default is no cap), `train_ratio=0.8`, `seed=42`
+- `max_pairs=-1` (no cap by default; set a smaller value for speed), `train_ratio=0.8`, `seed=42`
 
 **Challenges and fixes**
 - Extreme class imbalance (very low positive rate): use `pos_weight = #neg/#pos` inside the loss.

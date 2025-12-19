@@ -6,7 +6,7 @@ Extend the `FutureOfAIviaAI` repository by implementing and evaluating a **new**
 This work targets the Science4Cast-style task: given a temporal semantic network and a set of candidate (currently unconnected) node pairs, predict which pairs will form sufficiently strong connections in the future.
 
 ## Proposed Method (Not Present in the Official Repo)
-**Model M9: 2-layer Graph Convolutional Network (GCN)** for link prediction.
+**Model M9: 2-layer Graph Convolutional Network (GCN)** for link prediction, with skip connections.
 
 - **Graph encoder:** a standard 2-layer GCN operating on the graph snapshot up to `year_start`.
 - **Node features:** normalized node degree (1D), chosen for simplicity, speed, and as a strong baseline feature under preferential attachment dynamics.
@@ -29,7 +29,7 @@ This work targets the Science4Cast-style task: given a temporal semantic network
   - Use `pos_weight` in BCE loss.
   - Use a capped random subset of pairs for faster iteration (`max_pairs`), while preserving class presence.
 - **Runtime on CPU:**
-  - Keep the model small (2 layers), reduce epochs (default 10), and cap pairs (default 200k).
+  - Keep the model small (2 layers), reduce epochs (default 10), and cap pairs when needed (default is no cap).
   - Allow optional GPU usage if available.
 
 ## Implementation Plan
@@ -44,7 +44,7 @@ This work targets the Science4Cast-style task: given a temporal semantic network
 ## Evaluation Plan
 - Use the provided datasets: `SemanticGraph_delta_{delta}_cutoff_{cutoff}_minedge_{minedge}.pkl`.
 - Evaluate across the standard grid:
-  - `delta ∈ {1,3,5}`, `cutoff ∈ {0,5,25}`, `minedge ∈ {1,3}`.
+  - delta in {1,3,5}, cutoff in {0,5,25}, minedge in {1,3}.
 - Report ROC-AUC and compare against existing models (at least the baseline scores already present in the repository).
 
 ## Deliverables

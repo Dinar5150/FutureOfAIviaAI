@@ -21,4 +21,4 @@ To run a single dataset:
 python all_models/M9/model.py --data SemanticGraph_delta_1_cutoff_25_minedge_1.pkl --epochs 10
 ```
 
-Use `--max-pairs 200000` if you want to cap the number of evaluated pairs for speed.
+By default, `--max-pairs` is unlimited. Use `--max-pairs 200000` (or similar) if you want to cap the number of evaluated pairs for speed.

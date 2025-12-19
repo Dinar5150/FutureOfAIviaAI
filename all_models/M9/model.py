@@ -6,6 +6,8 @@ Trains a 2-layer GCN on node-degree features and scores pairs via dot product.
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 from dataclasses import dataclass, asdict
 from datetime import date
 from typing import Dict, Tuple
@@ -112,6 +114,18 @@ class TrainConfig:
     seed: int = 42
 
 
+def _import_utils():
+    try:
+        import utils as _utils  # type: ignore
+        return _utils
+    except ModuleNotFoundError:
+        repo_root = Path(__file__).resolve().parents[2]
+        if str(repo_root) not in sys.path:
+            sys.path.insert(0, str(repo_root))
+        import utils as _utils  # type: ignore
+        return _utils
+
+
 def auc_via_utils_calculate_ROC(scores: np.ndarray, labels: np.ndarray) -> float:
     """
     Compute ROC-AUC by calling the repository's `utils.calculate_ROC`.
@@ -128,7 +142,7 @@ def auc_via_utils_calculate_ROC(scores: np.ndarray, labels: np.ndarray) -> float
 
     sorted_idx = np.flip(np.argsort(scores, axis=0))
 
-    import utils as _utils
+    _utils = _import_utils()
 
     old_show = _utils.plt.show
     old_plot = _utils.plt.plot

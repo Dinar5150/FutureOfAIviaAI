@@ -53,7 +53,7 @@ if __name__ == "__main__":
                     unconnected_vertex_pairs=unconnected_vertex_pairs,
                     unconnected_vertex_pairs_solution=unconnected_vertex_pairs_solution,
                     year_start=year_start,
-                    config=None,
+                    config={"max_pairs": 200000} # Cap for speed
                 )
 
                 auc_full = res.get("auc_full")
