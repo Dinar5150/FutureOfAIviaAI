@@ -18,6 +18,7 @@ python all_models/M9/evaluate_model.py
 To run a single dataset:
 
 ```bash
-python all_models/M9/model.py --data SemanticGraph_delta_1_cutoff_25_minedge_1.pkl --epochs 10 --max-pairs 200000
+python all_models/M9/model.py --data SemanticGraph_delta_1_cutoff_25_minedge_1.pkl --epochs 10
 ```
 
+Use `--max-pairs 200000` if you want to cap the number of evaluated pairs for speed.

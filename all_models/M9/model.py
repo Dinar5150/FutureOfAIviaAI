@@ -68,11 +68,14 @@ class LinkPredictor(nn.Module):
         super().__init__()
         self.gcn1 = GCNLayer(in_dim, hidden_dim)
         self.gcn2 = GCNLayer(hidden_dim, out_dim)
+        self.skip1 = nn.Linear(in_dim, hidden_dim, bias=False)
+        self.skip2 = nn.Linear(hidden_dim, out_dim, bias=False)
         self.act = nn.ReLU()
 
     def encode(self, x: torch.Tensor, adj: torch.Tensor) -> torch.Tensor:
-        h = self.act(self.gcn1(x, adj))
-        h = self.gcn2(h, adj)
+        h = self.gcn1(x, adj) + self.skip1(x)
+        h = self.act(h)
+        h = self.gcn2(h, adj) + self.skip2(h)
         return h
 
     def decode(self, h: torch.Tensor, pairs: torch.Tensor) -> torch.Tensor:
@@ -105,7 +108,7 @@ class TrainConfig:
     lr: float = 3e-4
     weight_decay: float = 1e-4
     train_ratio: float = 0.8
-    max_pairs: int = 200_000
+    max_pairs: int = -1
     seed: int = 42
 
 
@@ -327,7 +330,7 @@ def cli() -> None:
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--batch-size", type=int, default=2048)
     parser.add_argument("--hidden-dim", type=int, default=64)
-    parser.add_argument("--max-pairs", type=int, default=200_000)
+    parser.add_argument("--max-pairs", type=int, default=-1)
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
